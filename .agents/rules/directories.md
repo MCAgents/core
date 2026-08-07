@@ -26,10 +26,10 @@ the project grows into them.
 | `creators/` | The instruction / information / changelog / index creator agents. | Present |
 | `prompts/` | Standing prompt templates and few-shot examples. | Present |
 | `planning/` | Task intake, breakdown, ordering, estimation, prioritization. | Present |
+| `knowledge/` | Domain context an agent needs to reason correctly. | Present |
 | `docs/` | Rules for writing README, wiki, and index files. | Reserved |
 | `skills/` | Step-by-step procedures for recurring tasks. | Reserved |
 | `tools/` | Tool definitions and schemas. | Reserved |
-| `knowledge/` | Domain context an agent needs to reason correctly. | Reserved |
 | `personas/` | Roles and behaviors to adopt. | Reserved |
 | `ethics/` | Safety boundaries and constraints. | Reserved |
 | `architecture/` | System design guidelines and structural constraints. | Reserved |

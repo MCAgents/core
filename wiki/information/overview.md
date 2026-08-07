@@ -16,7 +16,7 @@ exists today is:
 | `AGENTS.md` | Entry point for agents: reading order, routing, standing conventions. |
 | `INDEX.md` | Root router pointing at every index in the repository. |
 | `LICENSE` | MIT license, `Copyright (c) 2026 MCAgents`. |
-| `.agents/` | The agent instruction set — rules, git conventions, planning, prompts, creators. |
+| `.agents/` | The agent instruction set — rules, git conventions, planning, platform knowledge, prompts, creators. |
 | `wiki/` | This documentation tree. |
 
 There is no language, package manager, build system, test runner, entry point, or

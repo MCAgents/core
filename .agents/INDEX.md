@@ -34,6 +34,12 @@ may dictate or write files inside this tree. Any file added to or removed from
 |---|---|
 | [`planning/task-workflow.md`](planning/task-workflow.md) | Intake, task decomposition, branch order, execution order, merge approval. |
 
+## Knowledge
+
+| File | Purpose |
+|---|---|
+| [`knowledge/minecraft-platform.md`](knowledge/minecraft-platform.md) | Which server platforms are targeted, and the Folia threading constraints. |
+
 ## Prompts
 
 | File | Purpose |
