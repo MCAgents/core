@@ -5,6 +5,9 @@
 # the platform modules.
 
 [versions]
+# JSON codec used to read and write the vendor wire formats. Provided by every
+# target platform at runtime, so it is only ever a compileOnly dependency.
+gson = "2.14.0"
 # Latest published SpigotMC snapshot. Bukkit and Spigot types come from here.
 spigot-api = "26.2-R0.1-SNAPSHOT"
 # Latest published PaperMC build. A superset of the Spigot API.
@@ -14,6 +17,7 @@ paper-api = "26.2.build.111-stable"
 folia-api = "26.2.build.1-beta"
 
 [libraries]
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 spigot-api = { module = "org.spigotmc:spigot-api", version.ref = "spigot-api" }
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
 folia-api = { module = "dev.folia:folia-api", version.ref = "folia-api" }
