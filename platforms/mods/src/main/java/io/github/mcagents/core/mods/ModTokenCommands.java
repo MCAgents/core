@@ -1,5 +1,6 @@
 package io.github.mcagents.core.mods;
 
+import io.github.mcagents.core.api.llm.LlmCredentials;
 import io.github.mcagents.core.api.llm.LlmVendor;
 import io.github.mcagents.core.api.token.TokenState;
 import io.github.mcagents.core.common.MCAgentsProvider;
@@ -7,6 +8,7 @@ import io.github.mcagents.core.common.TokenHandles;
 import io.github.mcagents.core.mods.store.SharedTokenStore;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +43,17 @@ public final class ModTokenCommands {
     private final Logger logger;
 
     /**
+     * How long one request may take before it is abandoned.
+     *
+     * <p>Defined here rather than in any mod that consumes the API, for the
+     * same reason it is defined in the server plugin's configuration rather
+     * than a consumer's: a request either answers or fails within this window,
+     * which is what lets a consumer rely on its future always completing
+     * without owning a timer of its own.</p>
+     */
+    private final Duration requestTimeout;
+
+    /**
      * Opens the client side commands over the shared credential file.
      *
      * @param loaderDirectory The game directory the loader reported, or
@@ -50,7 +63,24 @@ public final class ModTokenCommands {
      * @throws NullPointerException When {@code logger} is {@code null}.
      */
     public ModTokenCommands(Path loaderDirectory, Logger logger) {
+        this(loaderDirectory, logger, LlmCredentials.DEFAULT_TIMEOUT);
+    }
+
+    /**
+     * Opens the client side commands with a non default request timeout.
+     *
+     * @param loaderDirectory The game directory the loader reported, or
+     *                        {@code null} to fall back to the conventional
+     *                        location for this operating system.
+     * @param logger Where to report problems.
+     * @param requestTimeout How long one request may take before it is
+     *                       abandoned.
+     * @throws NullPointerException When the logger or the timeout is
+     *                              {@code null}.
+     */
+    public ModTokenCommands(Path loaderDirectory, Logger logger, Duration requestTimeout) {
         this.logger = Objects.requireNonNull(logger, "logger cannot be null");
+        this.requestTimeout = Objects.requireNonNull(requestTimeout, "requestTimeout cannot be null");
         this.store = new SharedTokenStore(loaderDirectory, logger);
         reload();
     }
@@ -167,7 +197,9 @@ public final class ModTokenCommands {
 
         int ready = 0;
         for (LlmVendor vendor : LlmVendor.values()) {
-            if (provider.registerStore(vendor, store) == TokenState.READY) {
+            // The template carries the timeout, so it survives every rotation.
+            LlmCredentials template = LlmCredentials.of(vendor, "placeholder").withTimeout(requestTimeout);
+            if (provider.registerStore(vendor, store, template) == TokenState.READY) {
                 ready++;
             }
         }

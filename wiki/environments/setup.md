@@ -65,6 +65,24 @@ puts the key itself on screen. The full value is accepted too.
 
 Everything sits behind `mcagents.admin`, default op.
 
+### The request timeout
+
+```yaml
+request_timeout_seconds: 60
+```
+
+**This is the only place a timeout is defined.** Consumer plugins have no
+timeout setting, pass none, and cannot override it — which is the point: a
+request always either answers or fails within this window, so a consumer can rely
+on its future completing without owning a timer of its own.
+
+A timeout is not a credential failure. Nothing is evicted and nothing is retried:
+a model that has not answered in this long is unlikely to answer sooner on a
+second attempt, and retrying doubles the bill.
+
+Allowed range is 5–600 seconds; anything outside falls back to 60 with a warning.
+`/agents` shows the value in force.
+
 ## Test
 
 ```sh

@@ -57,3 +57,24 @@ deepseek:
 
 anthropic:
   token: []
+
+
+# ---------------------------------------------------------------------
+#  How long one request may take, in seconds.
+#
+#  This is the ONLY place a timeout is configured. MCAgents plugins do
+#  not have a timeout setting of their own — they rely on this one, so
+#  a request always either answers or fails within this window.
+#
+#  When it expires the request is abandoned and the plugin that asked
+#  is told it failed. Nothing is retried: a model that has not answered
+#  in this long is unlikely to answer sooner on a second attempt, and
+#  retrying doubles the bill.
+#
+#  Allowed: 5 to 600. Anything outside that falls back to 60 with a
+#  warning.
+#
+#  Raise it if you use a slow reasoning model; lower it if you would
+#  rather a player got an error quickly than waited.
+# ---------------------------------------------------------------------
+request_timeout_seconds: 60

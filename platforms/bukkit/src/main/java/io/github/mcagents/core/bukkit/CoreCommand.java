@@ -180,6 +180,8 @@ public final class CoreCommand implements CommandExecutor, TabCompleter {
         // three server platforms.
         sender.sendMessage(ChatColor.AQUA + "MCAgents " + plugin.getDescription().getVersion());
         sender.sendMessage(ChatColor.GRAY + "  credentials: " + ChatColor.WHITE + plugin.storeDescription());
+        sender.sendMessage(ChatColor.GRAY + "  request timeout: " + ChatColor.WHITE
+                + plugin.requestTimeout().toSeconds() + "s");
 
         for (LlmVendor vendor : LlmVendor.values()) {
             List<String> handles = TokenHandles.all(plugin.tokens(vendor));

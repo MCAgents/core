@@ -1,9 +1,12 @@
 package io.github.mcagents.core.bukkit;
 
+import io.github.mcagents.core.api.llm.LlmCredentials;
 import io.github.mcagents.core.api.llm.LlmVendor;
 import io.github.mcagents.core.api.token.TokenState;
 import io.github.mcagents.core.common.MCAgentsProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.time.Duration;
 
 /**
  * The shared enable and disable lifecycle for every Bukkit family entry point.
@@ -45,9 +48,35 @@ public abstract class AbstractCorePlugin extends JavaPlugin {
     protected abstract String platformName();
 
     /**
+     * The shortest request timeout worth configuring.
+     *
+     * <p>Below this even a fast model will not have answered, so a smaller
+     * value would fail every request rather than protect anything.</p>
+     */
+    private static final int MIN_TIMEOUT_SECONDS = 5;
+
+    /**
+     * The longest request timeout worth configuring.
+     *
+     * <p>Ten minutes. Past that a player has walked away, and the request is
+     * holding a connection for nobody.</p>
+     */
+    private static final int MAX_TIMEOUT_SECONDS = 600;
+
+    /**
      * The credential file, held so a reload can re-read it.
      */
     private YamlTokenStore store;
+
+    /**
+     * How long one request may take before it is abandoned.
+     *
+     * <p>Defined here and nowhere else. Consumer plugins do not carry a timeout
+     * setting, do not pass one, and cannot override this — a request either
+     * comes back or fails within this window, which is what lets a consumer rely
+     * on its future always completing without owning a timer of its own.</p>
+     */
+    private Duration requestTimeout = LlmCredentials.DEFAULT_TIMEOUT;
 
     /**
      * {@inheritDoc}
@@ -66,12 +95,13 @@ public abstract class AbstractCorePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         MCAgentsProvider provider = MCAgentsProvider.create();
+        saveDefaultConfig();
         this.store = new YamlTokenStore(this);
+        this.requestTimeout = readTimeout();
 
         int configured = 0;
         for (LlmVendor vendor : LlmVendor.values()) {
-            TokenState state = provider.registerStore(vendor, store);
-            if (state == TokenState.READY) {
+            if (registerVendor(provider, vendor) == TokenState.READY) {
                 configured++;
             }
         }
@@ -84,7 +114,8 @@ public abstract class AbstractCorePlugin extends JavaPlugin {
             getLogger().severe("The 'agents' command is missing from plugin.yml, so /agents will not work.");
         }
 
-        getLogger().info("MCAgents core ready on " + platformName() + ".");
+        getLogger().info("MCAgents core ready on " + platformName()
+                + ". Requests time out after " + requestTimeout.toSeconds() + "s.");
         if (configured == 0) {
             getLogger().warning("No API tokens are configured. Add one to "
                     + store.describe() + ", then run /agents reload.");
@@ -107,16 +138,65 @@ public abstract class AbstractCorePlugin extends JavaPlugin {
             return 0;
         }
 
+        reloadConfig();
         store.reload();
-        provider.reloadTokens();
+        this.requestTimeout = readTimeout();
 
+        // Re-register rather than reloadTokens(): the timeout may have changed,
+        // and it travels with the credential template rather than the pool.
         int ready = 0;
         for (LlmVendor vendor : LlmVendor.values()) {
-            if (provider.tokenState(vendor) == TokenState.READY) {
+            if (registerVendor(provider, vendor) == TokenState.READY) {
                 ready++;
             }
         }
         return ready;
+    }
+
+    /**
+     * Returns how long one request may take before it is abandoned.
+     *
+     * @return The configured request timeout.
+     */
+    public Duration requestTimeout() {
+        return requestTimeout;
+    }
+
+    /**
+     * Registers one vendor's store together with the configured timeout.
+     *
+     * @param provider The provider to register with.
+     * @param vendor The vendor to register.
+     * @return The credential state afterwards.
+     */
+    private TokenState registerVendor(MCAgentsProvider provider, LlmVendor vendor) {
+        // The template carries everything except the key: the endpoint and the
+        // timeout. The pool swaps only the key, so the timeout survives every
+        // rotation.
+        LlmCredentials template = LlmCredentials
+                .of(vendor, "placeholder")
+                .withTimeout(requestTimeout);
+        return provider.registerStore(vendor, store, template);
+    }
+
+    /**
+     * Reads the request timeout from configuration, clamping an unusable value
+     * rather than refusing to start.
+     *
+     * @return The timeout to apply.
+     */
+    private Duration readTimeout() {
+        int seconds = getConfig().getInt("request_timeout_seconds",
+                (int) LlmCredentials.DEFAULT_TIMEOUT.toSeconds());
+
+        if (seconds < MIN_TIMEOUT_SECONDS || seconds > MAX_TIMEOUT_SECONDS) {
+            int fallback = (int) LlmCredentials.DEFAULT_TIMEOUT.toSeconds();
+            getLogger().warning("config.yml sets request_timeout_seconds: " + seconds
+                    + ", which is outside " + MIN_TIMEOUT_SECONDS + "-" + MAX_TIMEOUT_SECONDS
+                    + ". Using " + fallback + ".");
+            return Duration.ofSeconds(fallback);
+        }
+        return Duration.ofSeconds(seconds);
     }
 
     /**
