@@ -50,6 +50,5 @@ the whole repository. Start at [`INDEX.md`](../../INDEX.md).
 
 ## Change logs
 
-Released versions are recorded under `wiki/logs/{Major}/{Minor}/{Patch}/`. No
-version has been declared yet, so no version directory exists. See
-[`../logs/INDEX.md`](../logs/INDEX.md).
+Released versions are recorded under `wiki/logs/{Major}/{Minor}/{Patch}/`. The
+current version is `0.1.0` — see [`../logs/INDEX.md`](../logs/INDEX.md).
