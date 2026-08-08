@@ -26,7 +26,7 @@ platforms/engine           implements every module above
 
 | Module | Package | Purpose |
 |---|---|---|
-| `api` | `…core.api` | Pure Java contracts: interfaces, records, enums, abstract types. No implementation, and no platform type anywhere. |
+| `api` | `…core.api` | Pure Java contracts: interfaces, records, enums, abstract types, and the `token` package holding the credential storage contract. No implementation, and no platform type anywhere. |
 | `common` | `…core.common` | Pure Java implementations of those contracts. Still no platform type. |
 | `platforms:bukkit` | `…core.bukkit` | The code SpigotMC, PaperMC, and Folia share, compiled against the Spigot API. |
 | `platforms:spigotmc` | `…core.spigotmc` | Only what SpigotMC needs on top of `platforms:bukkit`. |
