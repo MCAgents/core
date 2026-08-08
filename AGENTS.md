@@ -5,9 +5,10 @@ description: Entry point for agents working in MCAgents/core — reading order, 
 
 # AGENTS
 
-`MCAgents/core` is intended to hold the shared agent and API code that MCAgents'
-Minecraft plugins and mods build on. Today the repository contains the instruction
-set and documentation structure only — no source code yet. See
+`MCAgents/core` holds the shared agent and API code that MCAgents' Minecraft
+plugins and mods build on: a Gradle multi project on Java 25, whose `api` and
+`common` modules carry the language model API and whose eight `platforms/*`
+modules are scaffolded but empty. See
 [`wiki/information/overview.md`](wiki/information/overview.md).
 
 This file is an **overview**. It contains no rules of its own; it tells you where
@@ -66,6 +67,11 @@ reading ahead.
 
 Always active. The user never has to restate them.
 
+* **A change carries its documentation with it.** When code or project structure
+  changes, update the files that describe it — `wiki/` pages and the owning
+  `INDEX.md` — in the same commit, and propose the `.agents/` instructions the
+  change made wrong rather than rewriting them yourself.
+  [`.agents/rules/change-propagation.md`](.agents/rules/change-propagation.md).
 * Task intake, decomposition, branch order, and merge order —
   [`.agents/planning/task-workflow.md`](.agents/planning/task-workflow.md).
 * Branch naming —

@@ -16,6 +16,7 @@ may dictate or write files inside this tree. Any file added to or removed from
 
 | File | Purpose |
 |---|---|
+| [`rules/change-propagation.md`](rules/change-propagation.md) | A change to code or structure updates the docs and indexes it invalidates, in the same commit. |
 | [`rules/directories.md`](rules/directories.md) | Where a new file goes, and how to create a folder when none fits. |
 | [`rules/versioning.md`](rules/versioning.md) | Never change the project version without user approval. |
 | [`rules/repository.md`](rules/repository.md) | What is actually true about this repository right now. |

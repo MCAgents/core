@@ -7,17 +7,28 @@ description: Platform targets — Spigot, Paper, and Folia — their API hierarc
 
 ## Supported platforms
 
-`core` targets these three server platforms, and only these three for now:
+`core` targets two families. On the server side, three Bukkit platforms:
 
-| Platform | What it is | API roots |
+| Platform | What it is | API roots | Module |
+|---|---|---|---|
+| **Spigot** | A CraftBukkit fork implementing the Bukkit API. | `org.bukkit.*`, `org.spigotmc.*` | `platforms:spigotmc` |
+| **Paper** | A fork of Spigot. Superset of the Spigot API, plus its own. | Spigot roots, plus `io.papermc.paper.*` | `platforms:papermc` |
+| **Folia** | A PaperMC fork of Paper with regionised multithreading. | Paper roots, plus the regionised schedulers | `platforms:foliamc` |
+
+On the mod side, two loaders:
+
+| Loader | What it is | Module |
 |---|---|---|
-| **Spigot** | A CraftBukkit fork implementing the Bukkit API. | `org.bukkit.*`, `org.spigotmc.*` |
-| **Paper** | A fork of Spigot. Superset of the Spigot API, plus its own. | Spigot roots, plus `io.papermc.paper.*` |
-| **Folia** | A PaperMC fork of Paper with regionised multithreading. | Paper roots, plus the regionised schedulers |
+| **NeoForge** | A Forge fork, and the mainline Forge-lineage loader. | `platforms:neoforge` |
+| **Fabric** | A lightweight loader with its own API. | `platforms:fabric` |
 
-Other loaders and platforms — Fabric, Forge, NeoForge, Sponge, and the proxies
-(Velocity, BungeeCord) — are **out of scope**. Do not write code, documentation,
-or instructions targeting them until that decision changes.
+`platforms:bukkit` holds what the three server platforms share;
+`platforms:mods` plays the same role for the two loaders. `platforms:engine`
+implements every module.
+
+**Sponge, legacy Forge, and the proxies (Velocity, BungeeCord) remain out of
+scope.** Do not write code, documentation, or instructions targeting them until
+that decision changes.
 
 ## The hierarchy — compatibility runs one way
 
@@ -76,8 +87,10 @@ above** — not a switch that makes it true. Do not set it before the code earns
 `core` is a shared foundation consumed by several plugins and mods, so a mistake
 here propagates to every consumer:
 
-* **Write to the lowest common denominator by default** — the Bukkit/Spigot API —
-  so a consumer on any of the three platforms can use it.
+* **Write to the lowest common denominator by default** — the Bukkit/Spigot API
+  on the server side — so a consumer on any of the three server platforms can use
+  it. Better still, write it in `api` or `common`, where it names no platform at
+  all and both families get it.
 * **Never assume a main thread in `core`.** Shared code that calls
   `Bukkit.getScheduler()` makes every downstream consumer Folia-incompatible, even
   the ones that did everything right.
@@ -86,6 +99,27 @@ here propagates to every consumer:
 * **Thread-safety is part of `core`'s public contract.** For anything `core`
   exposes, document which thread or region it may be called from.
 
+## Dependency coordinates
+
+Every platform coordinate is declared once, in `gradle/libs.versions.toml`, and
+never inline in a module:
+
+| Catalog entry | Coordinate | Compiled against by |
+|---|---|---|
+| `spigot-api` | `org.spigotmc:spigot-api` | `platforms:bukkit`, `platforms:spigotmc` |
+| `paper-api` | `io.papermc.paper:paper-api` | `platforms:papermc` |
+| `folia-api` | `dev.folia:folia-api` | `platforms:foliamc`, `platforms:engine` |
+
+The engine compiles against the Folia API alone. All three declare the same
+`org.spigotmc:spigot-api` capability, so Gradle rejects them as a mutually
+exclusive conflict when declared together — only the superset can be named.
+
+**The mod loaders have no coordinate yet.** Resolving `net.neoforged:neoforge`
+or the Fabric loader requires a toolchain (ModDevGradle, Loom) that remaps
+Minecraft as part of the build. `platforms:mods`, `platforms:neoforge`, and
+`platforms:fabric` are plain Java modules until the first real loader code lands
+and brings its toolchain with it. Do not add one speculatively.
+
 ## Not yet decided
 
 Do not fill these in by guessing:
@@ -93,8 +127,6 @@ Do not fill these in by guessing:
 * The **Minecraft versions** `core` targets. Until they are decided, write no
   version-specific code, no compatibility shims, and no documentation claiming a
   supported range.
-* The **build system and API dependency coordinates** — none exist in this
-  repository yet. See [`../rules/repository.md`](../rules/repository.md).
 
 Record each one here in the same change that introduces it.
 

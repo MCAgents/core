@@ -10,42 +10,70 @@ the specialized rules rather than restating them.
 
 ## Current state — read this before assuming anything
 
-As of this instruction set, `MCAgents/core` contains **no source code**. The
-tracked files are:
+`MCAgents/core` is a **Gradle multi project build on Java 25**. The tracked files
+are:
 
 * `README.md` — project overview
 * `LICENSE` — MIT, `Copyright (c) 2026 MCAgents`
+* `settings.gradle`, `build.gradle`, `gradle.properties`, `gradlew`,
+  `gradlew.bat`, `gradle/` — the build, the wrapper, and the version catalog
+* `api/`, `common/`, `platforms/` — the ten modules, all packaged under
+  `io.github.mcagents.core`
 * the `.agents/` instruction tree and the `wiki/` documentation tree
 
-There is therefore **no language, package manager, build system, test runner,
-entry point, or CI pipeline in this repository yet**. Do not describe one, do not
-document commands for one, and do not write instructions that assume one. Anything
-you would have to guess at is not a rule — it is a fabrication.
+The module graph, the dependency rules, and the published coordinates are
+documented once, in
+[`../../wiki/information/modules.md`](../../wiki/information/modules.md). Do not
+restate them here; read that page rather than inferring the layout.
 
-## Intended purpose
+There is **no CI pipeline in this repository yet**. Do not describe one, do not
+document commands for one, and do not write instructions that assume one.
+Anything you would have to guess at is not a rule — it is a fabrication.
 
-`core` is intended to hold the shared agent and API code that MCAgents' Minecraft
-plugins and mods build on. That is the project's stated direction, not its current
-contents. Treat it as scope guidance for *where* code will eventually live — never
-as a description of code that exists.
+## What the project does
+
+`core` holds the shared agent and API code that MCAgents' Minecraft plugins and
+mods build on. Today that is one capability: driving language model agents —
+OpenRouter, OpenAI, DeepSeek, and Anthropic — through
+`io.github.mcagents.core.common.MCAgentsProvider`, the single public entry point.
+
+Three constraints define the project, and a change that breaks one of them is
+wrong regardless of how well it works:
+
+* **API only.** No commands, no permissions, no listeners, no gameplay. `core` is
+  consumed by plugins and mods; it is not one.
+* **No memory.** Nothing stores a conversation, a cache, or per player state. A
+  shared core that accumulated history would leak memory in every consumer at
+  once.
+* **Nothing blocks.** Every remote call returns a `CompletableFuture` and works
+  off the calling thread. A tick must never wait on a network call, and on Folia
+  there is no single main thread to wait in.
+
+The `platforms/*` modules exist and compile but hold no code yet. That is scope
+guidance for *where* platform code will live — never a description of code that
+exists.
 
 ## Rules
 
-* **Do not fabricate architecture.** Until source lands, `wiki/` describes the
-  repository as it is. No speculative architecture pages, no placeholder API
-  reference, no TODO-filled documents.
-* **Record commands only once they are real.** When a build system is introduced,
-  add its actual install / build / test / run commands to
-  [`../../wiki/environments/setup.md`](../../wiki/environments/setup.md) and
-  summarize them here. Never write a command you have not seen work in this repo.
+* **Do not fabricate architecture.** `wiki/` describes the repository as it is.
+  No speculative architecture pages, no placeholder API reference, no TODO-filled
+  documents, and no page describing a module that holds no code.
+* **Record commands only once they are real.** The build, test, and publish
+  commands live in
+  [`../../wiki/environments/setup.md`](../../wiki/environments/setup.md). Never
+  write a command you have not seen work in this repository.
+* **A change carries its documentation with it** — see
+  [`change-propagation.md`](change-propagation.md). Code and structure changes
+  update the `wiki/` pages and indexes they invalidate, in the same commit.
 * **The default branch is `master`.** Branch from it, never commit to it directly —
   see [`../git/branching-strategy.md`](../git/branching-strategy.md).
 * **The license is fixed.** MIT, held by MCAgents. Do not change the license, the
   copyright holder, or the year without explicit user instruction — that is a
   legal statement, not a code change.
-* **Never bump the version yourself** — see [`versioning.md`](versioning.md).
-  This repository has no version carrier and no `wiki/logs/` version directory
-  yet; creating either one requires user approval.
+* **Never bump the version yourself** — see [`versioning.md`](versioning.md). The
+  version carrier is `project-version` in `gradle.properties`, currently
+  `0.0.0`. No `wiki/logs/` version directory exists; creating one requires user
+  approval, exactly like editing that property.
 * **Placement is not a judgment call.** New instructions and documents go where
   [`directories.md`](directories.md) says, including creating a new folder when
   none fits.
@@ -55,10 +83,12 @@ as a description of code that exists.
 
 ## When this file goes stale
 
-The moment real source, a manifest, or a CI workflow lands in this repository,
-this file's "Current state" section is wrong. Updating it is part of the commit
-that introduces them — subject to the Discovery Protocol below, propose the
-rewrite rather than silently reshaping the rules.
+This file's "Current state" and "What the project does" sections describe the
+repository at a moment in time. The moment a CI workflow lands, a `platforms/*`
+module gains real code, or one of the three constraints above is deliberately
+changed, they are wrong. Correcting them is part of the change that caused it —
+subject to the Discovery Protocol below, propose the rewrite rather than silently
+reshaping the rules.
 
 ## Discovery Protocol
 
