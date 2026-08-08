@@ -14,11 +14,11 @@ folia-supported: true
 # The only command is administrative. This plugin is a service that consumer
 # plugins bind to; it exposes nothing to players.
 commands:
-  mcagents:
-    description: Show which platforms have a usable API token, or reload config.yml.
-    usage: /mcagents status | /mcagents reload
+  agents:
+    description: Manage MCAgents API tokens and see which platforms have a usable one.
+    usage: /agents | /agents reload | /agents <platform> token <add|remove> <token>
 
 permissions:
   mcagents.admin:
-    description: Allows running /mcagents, which reports credential health and reloads config.yml.
+    description: Allows running /agents, which manages API tokens and reports credential health.
     default: op

@@ -77,17 +77,17 @@ public abstract class AbstractCorePlugin extends JavaPlugin {
         }
 
         CoreCommand command = new CoreCommand(this);
-        if (getCommand("mcagents") != null) {
-            getCommand("mcagents").setExecutor(command);
-            getCommand("mcagents").setTabCompleter(command);
+        if (getCommand("agents") != null) {
+            getCommand("agents").setExecutor(command);
+            getCommand("agents").setTabCompleter(command);
         } else {
-            getLogger().severe("The 'mcagents' command is missing from plugin.yml, so /mcagents will not work.");
+            getLogger().severe("The 'agents' command is missing from plugin.yml, so /agents will not work.");
         }
 
         getLogger().info("MCAgents core ready on " + platformName() + ".");
         if (configured == 0) {
             getLogger().warning("No API tokens are configured. Add one to "
-                    + store.describe() + ", then run /mcagents reload.");
+                    + store.describe() + ", then run /agents reload.");
         } else {
             getLogger().info(configured + " platform(s) have a usable token.");
         }
@@ -117,6 +117,48 @@ public abstract class AbstractCorePlugin extends JavaPlugin {
             }
         }
         return ready;
+    }
+
+    /**
+     * Stores a credential and puts it into use immediately.
+     *
+     * @param vendor The platform the credential belongs to.
+     * @param token The credential to store.
+     * @return {@code true} when it was stored and the pool reloaded.
+     */
+    public boolean addToken(LlmVendor vendor, String token) {
+        if (store == null || !store.add(vendor.code(), token)) {
+            return false;
+        }
+        reloadCredentials();
+        return true;
+    }
+
+    /**
+     * Removes a stored credential and stops using it immediately.
+     *
+     * @param vendor The platform the credential belongs to.
+     * @param token The credential to remove.
+     */
+    public void removeToken(LlmVendor vendor, String token) {
+        if (store == null) {
+            return;
+        }
+        store.evict(vendor.code(), token);
+        reloadCredentials();
+    }
+
+    /**
+     * Returns a vendor's stored credentials, in the order they are tried.
+     *
+     * <p>For the command's masked handles only. The caller must not print these
+     * values — see {@link io.github.mcagents.core.common.TokenHandles}.</p>
+     *
+     * @param vendor The platform to read.
+     * @return The stored credentials, never {@code null}.
+     */
+    public java.util.List<String> tokens(LlmVendor vendor) {
+        return store == null ? java.util.List.of() : store.load(vendor.code());
     }
 
     /**

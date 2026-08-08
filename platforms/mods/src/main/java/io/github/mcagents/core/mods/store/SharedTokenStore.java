@@ -159,6 +159,30 @@ public final class SharedTokenStore implements TokenStore {
      * {@inheritDoc}
      *
      * <p>Re-reads before writing, so a credential another MCAgents mod added
+     * since this store last loaded survives.</p>
+     */
+    @Override
+    public synchronized boolean add(String vendorCode, String token) {
+        if (vendorCode == null || token == null || token.isBlank()) {
+            return false;
+        }
+
+        reload();
+        String vendor = vendorCode.trim().toLowerCase(Locale.ROOT);
+        List<String> tokens = new ArrayList<>(load(vendor));
+        if (tokens.contains(token.trim())) {
+            return false;
+        }
+
+        tokens.add(token.trim());
+        setTokens(vendor, tokens);
+        return write();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Re-reads before writing, so a credential another MCAgents mod added
      * since this store last loaded is preserved rather than overwritten.</p>
      */
     @Override

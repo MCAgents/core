@@ -7,8 +7,16 @@
 #  reads its credentials from here. They have no token settings of
 #  their own, so a key is pasted once and rotated once.
 #
-#  After editing, run:  /mcagents reload
+#  After editing, run:  /agents reload
 #  There is no need to restart the server.
+#
+#  You can also manage tokens without touching this file:
+#
+#      /agents <platform> token add <token>
+#      /agents <platform> token remove <handle>
+#
+#  Tab completion offers a masked handle such as #2:a3f9 for remove,
+#  so picking a key to delete never puts the key itself on screen.
 #
 #  KEEP THIS FILE PRIVATE. Anyone who can read it can spend your
 #  credit at the AI provider.

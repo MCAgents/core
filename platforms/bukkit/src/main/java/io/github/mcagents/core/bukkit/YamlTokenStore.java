@@ -103,7 +103,39 @@ public final class YamlTokenStore implements TokenStore {
     /**
      * {@inheritDoc}
      *
-     * <p>Rewrites the vendor's list without the rejected credential and saves.
+     * <p>Appends to the vendor's list and saves. Re-reads first, so a key added
+     * by an administrator does not clobber one the rotation logic evicted a
+     * moment earlier.</p>
+     */
+    @Override
+    public synchronized boolean add(String vendorCode, String token) {
+        if (vendorCode == null || token == null || token.isBlank()) {
+            return false;
+        }
+
+        reload();
+        String vendor = vendorCode.trim().toLowerCase(Locale.ROOT);
+        List<String> tokens = new ArrayList<>(load(vendor));
+        if (tokens.contains(token.trim())) {
+            return false;
+        }
+
+        tokens.add(token.trim());
+        config.set(vendor + ".token", tokens);
+        try {
+            config.save(file);
+            return true;
+        } catch (IOException e) {
+            plugin.getLogger().warning("A " + vendor + " token could not be written to config.yml ("
+                    + e.getMessage() + ").");
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Rewrites the vendor's list without the removed credential and saves.
      * The rest of the file — comments included, since Bukkit's YAML writer keeps
      * the header — is otherwise left alone.</p>
      *

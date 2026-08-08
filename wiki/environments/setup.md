@@ -49,8 +49,21 @@ Drop `platforms/engine/build/libs/MCAgents-{version}.jar` into the server's
 `plugins/` folder. It loads as a plugin named `MCAgents`, which is the name
 consumer plugins declare in their `depend` list.
 
-There is nothing to configure. The plugin has no commands and no config file —
-it exists so consumer plugins have an API to bind to.
+Configure API tokens either by editing `plugins/MCAgents/config.yml`, or in
+game:
+
+```
+/agents                                   credential status for every platform
+/agents reload                            re-read the credential file
+/agents <platform> token add <token>      store a token
+/agents <platform> token remove <handle>  delete one, handle from tab completion
+```
+
+Tab completion offers a **masked handle** such as `#2:a3f9` for `remove` —
+position plus the last four characters — so choosing which key to delete never
+puts the key itself on screen. The full value is accepted too.
+
+Everything sits behind `mcagents.admin`, default op.
 
 ## Test
 
