@@ -29,13 +29,31 @@ public interface TokenStore {
     List<String> load(String vendorCode);
 
     /**
-     * Permanently removes a credential the vendor rejected.
+     * Adds a credential, so it is available from the next request onward.
      *
-     * <p>Called only when a credential is known dead — a rejection, never a
-     * rate limit and never a network failure. Deleting a healthy credential
-     * destroys something the user paid for and cannot be undone from inside the
-     * game, so an implementation should treat an unexpected call here as a bug
-     * rather than a hint.</p>
+     * <p>Adding one that is already stored is a no-op rather than a duplicate:
+     * a duplicated key would be tried twice in a row on rotation, and evicted
+     * twice when it turned out to be dead.</p>
+     *
+     * @param vendorCode The vendor the credential belongs to.
+     * @param token The credential to store. Implementations must never log or
+     *              echo it.
+     * @return {@code true} when the credential was stored, {@code false} when it
+     *         was already present or could not be written.
+     */
+    boolean add(String vendorCode, String token);
+
+    /**
+     * Permanently removes a credential, whether or not the vendor rejected it.
+     *
+     * <p>Called automatically only when a credential is known dead — a
+     * rejection, never a rate limit and never a network failure. Deleting a
+     * healthy credential destroys something the user paid for and cannot be
+     * undone from inside the game.</p>
+     *
+     * <p>It is also called deliberately, by the administrative command, when a
+     * server owner removes a key by hand. An implementation cannot tell the two
+     * apart and does not need to.</p>
      *
      * <p>Removing a credential that is not present is a no-op, not an error.</p>
      *

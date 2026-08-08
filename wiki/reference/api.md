@@ -70,6 +70,9 @@ Two ways to register a vendor, and the difference matters.
 | `reloadTokens(LlmVendor)` | `TokenState` | Re-read one vendor's store. |
 | `reloadTokens()` | `int` | Re-read every store; returns how many vendors were reloaded. |
 
+`TokenStore` itself is four methods: `load`, `add`, `evict`, `reload`, plus
+`describe`. `add` and `evict` are what the `/agents` command drives.
+
 With a store registered, core handles the whole credential lifecycle so a
 consumer never sees a key again:
 
