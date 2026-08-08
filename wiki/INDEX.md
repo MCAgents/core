@@ -18,6 +18,18 @@ Any page added to or removed from `wiki/` is reflected here **in the same commit
 | [`information/overview.md`](information/overview.md) | What this repository is, what it is for, and what it contains today. |
 | [`information/modules.md`](information/modules.md) | The ten build modules, how they depend on each other, and what is published. |
 
+## Guides
+
+| File | Purpose |
+|---|---|
+| [`guides/llm-providers.md`](guides/llm-providers.md) | Getting from an API key to a model's reply, and the threading and memory rules that come with it. |
+
+## Reference
+
+| File | Purpose |
+|---|---|
+| [`reference/api.md`](reference/api.md) | Every public type in the api and common modules, method by method. |
+
 ## Environments
 
 | File | Purpose |

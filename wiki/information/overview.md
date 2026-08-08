@@ -5,11 +5,17 @@ hold the agent and API code that MCAgents' Minecraft plugins and mods build on, 
 that behavior common to several projects lives in one place instead of being
 copied between them.
 
+What that means today is one capability: driving language model agents —
+OpenRouter, OpenAI, DeepSeek, and Anthropic — from a plugin or a mod, through a
+single class. The core is API only. It has no commands, no permissions, and no
+memory: it stores no conversation and no per player state, so a consumer keeps
+whatever history it wants and replays it.
+
 ## Current state
 
-The repository holds a Gradle multi project build with no source code in it yet —
-every module exists, compiles, and produces a jar, but carries only its
-`package-info.java`. What exists today is:
+The `api` and `common` modules carry the agent API and its implementation. The
+eight `platforms/*` modules exist, compile, and produce a jar, but hold only
+their `package-info.java` so far. What exists today is:
 
 | Path | What it is |
 |---|---|
