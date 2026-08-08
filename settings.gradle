@@ -1,0 +1,36 @@
+/*
+ * Settings for the MCAgents core multi project build.
+ *
+ * The root project is named `mcagents`, which is what gives the published
+ * modules their `mcagents-api` and `mcagents-common` artifact ids — see the
+ * `artifactId` rule in the root `build.gradle`.
+ */
+
+plugins {
+    // Apply the foojay-resolver plugin to allow automatic download of JDKs
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'mcagents'
+
+// Pure Java layers. Everything else compiles against these two and never the
+// other way around.
+include 'api'
+include 'common'
+
+// Bukkit family. `platforms:bukkit` holds the code the three server entry
+// points share; each entry point adds only what its own server needs.
+include 'platforms:bukkit'
+include 'platforms:spigotmc'
+include 'platforms:papermc'
+include 'platforms:foliamc'
+
+// Mod loader family. `platforms:mods` holds the code the loader entry points
+// share, mirroring the role `platforms:bukkit` plays for the server side.
+include 'platforms:mods'
+include 'platforms:neoforge'
+include 'platforms:fabric'
+
+// The universal entry point. It is the only module that implements every other
+// module, so a single artifact carries the whole core.
+include 'platforms:engine'
