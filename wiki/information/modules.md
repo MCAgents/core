@@ -37,6 +37,24 @@ platforms/engine           implements every module above
 | `platforms:fabric` | `…core.fabric` | Only what Fabric needs on top of `platforms:mods`. |
 | `platforms:engine` | `…core.engine` | The universal entry point. The one module that implements every other module, so a single artifact carries the whole core. |
 
+## The distributed artifact is a Bukkit plugin
+
+`MCAgents-{version}.jar` is not a library you drop on a classpath — it is a
+**plugin the server loads**, named `MCAgents` in its `plugin.yml`. That name is
+the contract: a consumer plugin declares `depend: [MCAgents]`, which is what
+makes Bukkit load this one first and expose its classes to the consumer's
+bridge.
+
+It is a service plugin. It registers no commands, no permissions, and no
+listeners, and a player never sees it do anything. `onEnable` builds a
+`MCAgentsProvider` and installs it as `MCAgentsProvider.instance`; `onDisable`
+closes it. Credentials are not its business — they belong to whichever consumer
+plugin has a configuration file.
+
+`folia-supported: true` is declared because the provider schedules nothing and
+touches no game state: every call is a `CompletableFuture` over an HTTP client,
+so regionised multithreading has nothing here to break.
+
 ## Why the dependencies are `compileOnly`
 
 Every module below the engine declares `api`, `common`, and its family core

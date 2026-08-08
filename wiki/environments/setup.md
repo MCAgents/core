@@ -43,6 +43,15 @@ Useful variants:
 ./gradlew javaToolchains             # show which JDK the build resolved
 ```
 
+## Install it on a server
+
+Drop `platforms/engine/build/libs/MCAgents-{version}.jar` into the server's
+`plugins/` folder. It loads as a plugin named `MCAgents`, which is the name
+consumer plugins declare in their `depend` list.
+
+There is nothing to configure. The plugin has no commands and no config file —
+it exists so consumer plugins have an API to bind to.
+
 ## Test
 
 ```sh

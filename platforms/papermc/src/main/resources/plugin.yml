@@ -1,0 +1,10 @@
+name: MCAgents
+version: '${version}'
+main: io.github.mcagents.core.papermc.PaperMCCorePlugin
+api-version: '1.21'
+description: The MCAgents agent API. Provides language model access to other plugins.
+authors: [jetsadawijit]
+website: https://mcagents.github.io/website
+
+# No commands and no permissions, deliberately. This plugin is a service that
+# consumer plugins bind to; it exposes nothing to players.
