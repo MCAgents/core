@@ -42,6 +42,9 @@ dependencies {
     // conflict. Which platform is running is resolved at runtime, so no
     // compile time Paper or Spigot dependency is required.
     compileOnly libs.folia.api
+
+    // Provided by the server and by Minecraft; never shaded.
+    compileOnly libs.gson
 }
 
 jar {

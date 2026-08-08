@@ -1,5 +1,7 @@
 package io.github.mcagents.core.bukkit;
 
+import io.github.mcagents.core.api.llm.LlmVendor;
+import io.github.mcagents.core.api.token.TokenState;
 import io.github.mcagents.core.common.MCAgentsProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -43,20 +45,98 @@ public abstract class AbstractCorePlugin extends JavaPlugin {
     protected abstract String platformName();
 
     /**
+     * The credential file, held so a reload can re-read it.
+     */
+    private YamlTokenStore store;
+
+    /**
      * {@inheritDoc}
      *
-     * <p>Builds the provider and installs it as
-     * {@link MCAgentsProvider#instance}. No vendor is registered and no
-     * connection is opened — credentials belong to the consumer plugin that has
-     * a configuration file, not to this one.</p>
+     * <p>Builds the provider, reads this plugin's own {@code config.yml}, and
+     * registers a credential store for every vendor configured there.</p>
+     *
+     * <p>Credentials live here, once, for the whole server. A consumer plugin
+     * never sees a token, never has a token section in its own configuration,
+     * and never decides whether one is dead — it asks the provider and gets an
+     * answer. That is the point of putting them here: one file to secure, one
+     * place to rotate, and one implementation of the rejected-versus-rate-limited
+     * decision that would otherwise be repeated, differently, in every
+     * consumer.</p>
      */
     @Override
     public void onEnable() {
-        MCAgentsProvider.create();
+        MCAgentsProvider provider = MCAgentsProvider.create();
+        this.store = new YamlTokenStore(this);
+
+        int configured = 0;
+        for (LlmVendor vendor : LlmVendor.values()) {
+            TokenState state = provider.registerStore(vendor, store);
+            if (state == TokenState.READY) {
+                configured++;
+            }
+        }
+
+        CoreCommand command = new CoreCommand(this);
+        if (getCommand("mcagents") != null) {
+            getCommand("mcagents").setExecutor(command);
+            getCommand("mcagents").setTabCompleter(command);
+        } else {
+            getLogger().severe("The 'mcagents' command is missing from plugin.yml, so /mcagents will not work.");
+        }
 
         getLogger().info("MCAgents core ready on " + platformName() + ".");
-        getLogger().info("This plugin provides the agent API. It has no commands and no configuration; "
-                + "install a consumer plugin such as MCAgentsChat to use it.");
+        if (configured == 0) {
+            getLogger().warning("No API tokens are configured. Add one to "
+                    + store.describe() + ", then run /mcagents reload.");
+        } else {
+            getLogger().info(configured + " platform(s) have a usable token.");
+        }
+    }
+
+    /**
+     * Re-reads {@code config.yml} and reinstalls every vendor's credentials.
+     *
+     * <p>What backs the reload command: a token pasted into the file becomes
+     * usable without restarting the server.</p>
+     *
+     * @return How many platforms have a usable token afterwards.
+     */
+    public int reloadCredentials() {
+        MCAgentsProvider provider = MCAgentsProvider.instance;
+        if (provider == null) {
+            return 0;
+        }
+
+        store.reload();
+        provider.reloadTokens();
+
+        int ready = 0;
+        for (LlmVendor vendor : LlmVendor.values()) {
+            if (provider.tokenState(vendor) == TokenState.READY) {
+                ready++;
+            }
+        }
+        return ready;
+    }
+
+    /**
+     * Returns the credential state for a vendor, for the status command.
+     *
+     * @param vendor The vendor to report on.
+     * @return Its credential state.
+     */
+    public TokenState credentialState(LlmVendor vendor) {
+        MCAgentsProvider provider = MCAgentsProvider.instance;
+        return provider == null ? TokenState.NOT_SET : provider.tokenState(vendor);
+    }
+
+    /**
+     * Describes where credentials are stored, for the status command.
+     *
+     * @return The configuration file path, never a credential.
+     */
+    public String storeDescription() {
+        return store == null ? "not initialised" : store.describe();
     }
 
     /**
