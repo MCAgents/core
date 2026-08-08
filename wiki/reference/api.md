@@ -197,7 +197,7 @@ tokens can be billed differently.
 | `vendor()` | `LlmVendor` | Which service these reach. |
 | `apiKey()` | `String` | The secret. Never blank. |
 | `baseUrl()` | `String` | The endpoint. Trailing slashes are stripped. |
-| `timeout()` | `Duration` | Bounds one HTTP exchange, not a retry sequence — the core does not retry. Defaults to 60s. |
+| `timeout()` | `Duration` | Bounds one HTTP exchange, not a retry sequence — the core does not retry. Defaults to 60s, and on a server comes from `request_timeout_seconds` in the plugin's `config.yml`. Carried on the credential template, so it survives every rotation. |
 | `headers()` | `Map<String,String>` | Extra headers on every request. Unmodifiable copy. |
 
 Build with `LlmCredentials.of(vendor, apiKey)` or
