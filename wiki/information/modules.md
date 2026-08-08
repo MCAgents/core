@@ -72,9 +72,15 @@ is one change in one file:
 
 | Catalog entry | Coordinate | Used by |
 |---|---|---|
+| `gson` | `com.google.code.gson:gson` | `common` |
 | `spigot-api` | `org.spigotmc:spigot-api` | `platforms:bukkit`, `platforms:spigotmc` |
 | `paper-api` | `io.papermc.paper:paper-api` | `platforms:papermc` |
 | `folia-api` | `dev.folia:folia-api` | `platforms:foliamc`, `platforms:engine` |
+
+Gson is `compileOnly` like the platform APIs, and for the same reason: every
+target already provides it. The Bukkit family bundles it in the server jar, and
+Minecraft itself pulls it in for the mod loaders, so the shaded engine jar
+deliberately carries no copy of it.
 
 The engine compiles against the Folia API alone. Folia is a superset of Paper,
 which is a superset of Spigot, and all three declare the same

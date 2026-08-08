@@ -7,6 +7,12 @@ dependencies {
     // classes are never duplicated into a consumer's classpath by this jar —
     // the engine is the single module that bundles them.
     compileOnly project(':api')
+
+    // JSON codec for the vendor wire formats. compileOnly because every
+    // platform the core targets already provides Gson on the classpath: the
+    // Bukkit family bundles it in the server jar, and Minecraft itself pulls
+    // it in for the mod loaders. Shading a second copy would be waste.
+    compileOnly libs.gson
 }
 
 base {
