@@ -3,14 +3,28 @@
 Shared foundation repository for **MCAgents**. It is intended to hold the agent
 and API code that MCAgents' Minecraft plugins and mods build on, so that behavior
 common to several projects lives in one place instead of being copied between
-them. The repository is at the scaffold stage — the Gradle build and every module
-exist, but they carry no source code yet.
+them. Today that means one thing: driving language model agents — OpenRouter,
+OpenAI, DeepSeek, and Anthropic — from a plugin or a mod, through a single class.
+
+```java
+MCAgentsProvider agents = MCAgentsProvider.create();
+agents.registerAnthropic(key);
+
+agents.askAnthropic("claude-opus-4", "Name this village in three words.")
+      .thenAccept(name -> scheduler.run(() -> village.rename(name)));
+```
+
+It is API only. No commands, no permissions, and no memory — the core stores no
+conversation and no per player state, so a consumer keeps whatever history it
+wants and replays it.
 
 ## What is here today
 
 - A Gradle multi project build on **Java 25**: `api`, `common`, and eight
   `platforms/*` modules, all under `io.github.mcagents.core`. See
   [`wiki/information/modules.md`](wiki/information/modules.md).
+- `MCAgentsProvider` — the single entry point, and the only class a consumer
+  needs to read. See [`wiki/reference/api.md`](wiki/reference/api.md).
 - An agent instruction set under `.agents/` — placement rules, git conventions,
   task workflow, and the creator agents that maintain the trees.
 - A documentation tree under `wiki/`.
@@ -34,6 +48,10 @@ Start at [`wiki/INDEX.md`](wiki/INDEX.md).
 
 - [`wiki/information/overview.md`](wiki/information/overview.md) — what this
   repository is and how it is organized.
+- [`wiki/guides/llm-providers.md`](wiki/guides/llm-providers.md) — getting from
+  an API key to a model's reply.
+- [`wiki/reference/api.md`](wiki/reference/api.md) — every public type, method
+  by method.
 - [`wiki/information/modules.md`](wiki/information/modules.md) — the module
   graph, the dependency rules, and the published artifacts.
 - [`wiki/environments/setup.md`](wiki/environments/setup.md) — getting a working
