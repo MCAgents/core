@@ -52,9 +52,9 @@ Do not scaffold empty folders.
 |---|---|---|
 | `information/` | What the project is, architecture, features, concepts. | Present |
 | `environments/` | Setup, runtime, configuration, containers, CI environments. | Present |
+| `guides/` | Task-oriented how-tos. | Present |
+| `reference/` | Commands, config keys, API surface, schema. | Present |
 | `logs/` | Versioned change logs — see the changelog creator. | Present |
-| `guides/` | Task-oriented how-tos. | Reserved |
-| `reference/` | Commands, config keys, API surface, schema. | Reserved |
 
 ## C. Placement algorithm
 
