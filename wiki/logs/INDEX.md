@@ -18,4 +18,5 @@ approval — see [`../../.agents/rules/versioning.md`](../../.agents/rules/versi
 
 | Version | Summary | Files |
 |---|---|---|
+| [`0/2/0/`](0/2/0/CHANGELOG.md) | Credentials move into core entirely: its own config.yml, the shared mcagents.json, and the /mcagents command. | `CHANGELOG.md` |
 | [`0/1/0/`](0/1/0/CHANGELOG.md) | First functional release: the agent API, four vendors, a loadable Bukkit plugin, and credential pooling. | `CHANGELOG.md` |

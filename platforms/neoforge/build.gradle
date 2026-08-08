@@ -11,6 +11,8 @@ dependencies {
     // The mod family core, mirroring the role platforms:bukkit plays for the
     // server side. This module adds only what NeoForge itself needs.
     compileOnly project(':platforms:mods')
+
+    compileOnly libs.gson
 }
 
 // The NeoForge coordinate is not declared yet. Resolving net.neoforged:neoforge
