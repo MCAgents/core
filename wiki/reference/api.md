@@ -57,6 +57,41 @@ else's code.
 Registering opens no connection, so a bad key is only discovered on the first
 real call — or on `ping`.
 
+### Credentials, and who owns them
+
+Two ways to register a vendor, and the difference matters.
+
+| Method | Returns | What it does |
+|---|---|---|
+| `register(LlmCredentials)` | `void` | One fixed credential. Nothing rotates; a failure goes straight back to the caller. |
+| `registerStore(LlmVendor, TokenStore)` | `TokenState` | Hands core **where the credentials live**. Core owns the rest. |
+| `registerStore(LlmVendor, TokenStore, LlmCredentials)` | `TokenState` | Same, reached through a non-default endpoint. The template's key is ignored; its base URL, timeout, and headers are used with every credential from the store. |
+| `tokenState(LlmVendor)` | `TokenState` | `READY`, `NOT_SET`, or `EXPIRED`. |
+| `reloadTokens(LlmVendor)` | `TokenState` | Re-read one vendor's store. |
+| `reloadTokens()` | `int` | Re-read every store; returns how many vendors were reloaded. |
+
+With a store registered, core handles the whole credential lifecycle so a
+consumer never sees a key again:
+
+* a **rejected** credential (401/403) is retried on the next one, and the dead
+  one is **deleted from the store**;
+* a **rate limited** credential (429) is retried on the next one and **kept** —
+  it is healthy, merely busy;
+* **anything else** is not retried and touches no credential, because nothing
+  was learned about it.
+
+That distinction is the reason this lives in core rather than in each consumer.
+Evicting a rate-limited key destroys something the user paid for, and nothing
+inside a game can undo it — so it is worth writing once, correctly.
+
+`NOT_SET` and `EXPIRED` are separate answers deliberately: both mean "no usable
+credential", but one asks the owner to add a key and the other tells them their
+keys stopped working.
+
+Rotation rebuilds credentials from the vendor's stored connection settings, so a
+deployment behind a proxy or a self-hosted gateway is never silently moved onto
+the public endpoint.
+
 ### Calling a model
 
 | Method | Returns | What it does |
