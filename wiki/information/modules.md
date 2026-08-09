@@ -79,6 +79,9 @@ and neither is named by type from anywhere else. The loaders — NeoForge and
 Fabric — sit beside them and differ only in how they announce an entry point,
 which is a much smaller difference than the one between the two sides.
 
+How the right half is started without linking the other is on
+[`mod-sides.md`](mod-sides.md).
+
 ## The distributed artifact is a Bukkit plugin
 
 `MCAgents-{version}.jar` is not a library you drop on a classpath — it is a

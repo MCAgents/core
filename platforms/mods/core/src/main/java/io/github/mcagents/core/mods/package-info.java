@@ -1,9 +1,22 @@
 /**
- * Shared mod loader code.
+ * Shared mod code — every loader, and both physical sides.
  *
- * <p>Everything the NeoForge and Fabric entry points have in common lives
- * here, mirroring the role {@code io.github.mcagents.core.bukkit} plays for
- * the server side. This package is loader agnostic: code that needs a loader
- * specific type belongs in that loader's own module instead.</p>
+ * <p>Everything the mod modules have in common lives here, mirroring the role
+ * {@code io.github.mcagents.core.bukkit} plays for the server side. Two rules
+ * decide what belongs:</p>
+ *
+ * <ul>
+ *   <li><strong>Loader agnostic.</strong> Code needing a NeoForge or Fabric
+ *       type belongs in that loader's own module.</li>
+ *   <li><strong>Side agnostic.</strong> Code that only makes sense on a client,
+ *       or only where a client cannot be trusted, belongs in
+ *       {@code io.github.mcagents.core.mods.client} or
+ *       {@code io.github.mcagents.core.mods.server}. A branch on the side
+ *       inside a shared class is the shape this split exists to avoid.</li>
+ * </ul>
+ *
+ * <p>The machinery that decides which side is running, and starts the matching
+ * half without linking the other, is in
+ * {@link io.github.mcagents.core.mods.environment}.</p>
  */
 package io.github.mcagents.core.mods;
