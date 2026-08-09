@@ -15,6 +15,14 @@ dependencies {
     compileOnly libs.gson
 }
 
+dependencies {
+    // `compileOnly` does not reach the test compile classpath, so the contracts
+    // this module implements are declared again for the tests. The engine still
+    // bundles exactly one copy; nothing here changes what ships.
+    testImplementation project(':api')
+    testImplementation libs.gson
+}
+
 base {
     archivesName = "${rootProject.name}-common"
 }
