@@ -14,8 +14,10 @@ whatever history it wants and replays it.
 ## Current state
 
 The `api` and `common` modules carry the agent API and its implementation. The
-eight `platforms/*` modules exist, compile, and produce a jar, but hold only
-their `package-info.java` so far. What exists today is:
+`platforms/*` modules sit in two families — `platforms/bukkit/*` for the three
+server platforms and `platforms/mods/*` for the two mod loaders and the two
+physical sides — with `platforms/engine` bundling every one of them into the
+single universal jar. What exists today is:
 
 | Path | What it is |
 |---|---|
@@ -25,7 +27,7 @@ their `package-info.java` so far. What exists today is:
 | `LICENSE` | MIT license, `Copyright (c) 2026 MCAgents`. |
 | `settings.gradle`, `build.gradle`, `gradle.properties` | The Gradle multi project build configuration. |
 | `gradlew`, `gradlew.bat`, `gradle/` | The Gradle wrapper and the version catalog. |
-| `api/`, `common/`, `platforms/` | The ten build modules — see [`modules.md`](modules.md). |
+| `api/`, `common/`, `platforms/` | The twelve build modules — see [`modules.md`](modules.md). |
 | `.agents/` | The agent instruction set — rules, git conventions, planning, platform knowledge, prompts, creators. |
 | `wiki/` | This documentation tree. |
 
