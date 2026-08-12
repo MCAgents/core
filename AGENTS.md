@@ -81,11 +81,11 @@ session, the user wins — and you say out loud which rule you are setting aside
 | Write a rule or instruction | `{shared}/creators/instruction-creator.md` |
 | Notice a rule worth adding, or find an instruction that is wrong | `{shared}/rules/discovery-protocol.md` |
 | Write documentation, an SOP, or a domain guideline | `{shared}/creators/information-creator.md` |
+| Change code or structure that a document describes | `{shared}/rules/change-propagation.md` |
 | Record progress, a decision, or session state | `{shared}/creators/memory-creator.md` |
 | Decide what may be written to memory, and how | `{shared}/rules/memory-policy.md` |
 | Touch anything that carries a version number | `{shared}/rules/versioning.md` |
 | Record a release | `{shared}/creators/changelog-creator.md` |
-| Change code or structure that a document or index describes | [`.agents/rules/change-propagation.md`](.agents/rules/change-propagation.md) |
 | Write code that runs on a Minecraft server or mod loader | [`.agents/knowledge/minecraft-platform.md`](.agents/knowledge/minecraft-platform.md) |
 | Need project facts, commands, or orientation | [`.agents/wiki/context/repository-map.md`](.agents/wiki/context/repository-map.md) |
 | Do anything at all in this project | [`.agents/rules/repository.md`](.agents/rules/repository.md) |
