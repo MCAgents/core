@@ -31,8 +31,17 @@ Full description: [`../../../wiki/information/overview.md`](../../../wiki/inform
 | `platforms/mods/{neoforge,fabric}/` | Loader entry points. Plain Java modules today — no loader toolchain yet. |
 | `platforms/engine/` | The only module that implements every other one; produces the universal jar. |
 | `gradle/libs.versions.toml` | Every dependency coordinate. Never declare one inline in a module. |
-| `.agents/` | The instruction, index, agent-wiki, and memory trees. |
+| `.agents/` | This repository's own instructions, plus the index, agent-wiki, and memory trees. The universal conventions are **not** here — they come from the connector. |
 | `wiki/` | Human documentation, including `wiki/logs/` release history. |
+
+## Where the conventions come from
+
+Branching, commits, pull requests, task workflow, directory placement, versioning,
+memory policy, the discovery protocol, and the creators are served by the
+**`lxagents-agents-base`** MCP connector, not stored here. Read
+`agents://manifest.json` once to see what exists, then
+`agents://index/root-index.md` to route. `.agents/` holds only what is specific to
+`MCAgents/core` — see [`../../rules/repository.md`](../../rules/repository.md).
 
 The module graph, the dependency rules, and the published coordinates are documented
 once, in
@@ -105,7 +114,7 @@ None of these are tracked. Do not commit them, and do not document a path under
 ## Before you write a file
 
 Placement is not a judgment call — run the algorithm in
-[`../../rules/directories.md`](../../rules/directories.md). Four trees, and the tree
+`{shared}/rules/directories.md`. Four trees, and the tree
 is not negotiable:
 
 * rules → `.agents/{folder}/{file}.md` (gated)

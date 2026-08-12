@@ -19,10 +19,28 @@ are:
   `gradlew.bat`, `gradle/` — the build, the wrapper, and the version catalog
 * `api/`, `common/`, `platforms/` — the twelve modules, all packaged under
   `io.github.mcagents.core`
-* `.agents/` — the instruction folders, plus three reserved structural trees:
-  `.agents/index/` (every index), `.agents/wiki/` (agent knowledge), and
-  `.agents/memory/` (dynamic state)
+* `.agents/` — this repository's own instructions (`rules/`, `knowledge/`), plus
+  three reserved structural trees: `.agents/index/` (every index), `.agents/wiki/`
+  (agent knowledge), and `.agents/memory/` (dynamic state)
 * `wiki/` — the human documentation tree, including `wiki/logs/` release history
+
+## Which instruction set this repository is on
+
+This is a **consuming repository**. The universal conventions — branching, commits,
+pull requests, task workflow, the directory architecture, versioning, memory policy,
+the discovery protocol, no-session-links, and the five creators — are served by the
+**`lxagents-agents-base`** MCP connector and are addressed as
+`agents://{folder}/{file}.md`, referred to in prose as `{shared}`.
+
+**Nothing shared is copied here.** `.agents/` carries only what is this repository's
+own; there is no `git/`, `planning/`, `prompts/`, or `creators/` folder, and creating
+one is the duplication this split exists to prevent. A local file whose frontmatter
+`name` matches a shared file's `name` would override that shared file whole, and every
+such override needs a row with a stated reason in
+[`../index/root-index.md`](../index/root-index.md). There are none today.
+
+If the connector cannot be reached, say so plainly and work from this local set alone.
+Do not reconstruct the shared rules from memory, and do not clone or paste them in.
 
 The module graph, the dependency rules, and the published coordinates are
 documented once, in
@@ -69,21 +87,21 @@ exists.
   [`change-propagation.md`](change-propagation.md). Code and structure changes
   update the `wiki/` pages and indexes they invalidate, in the same commit.
 * **The default branch is `master`.** Branch from it, never commit to it directly —
-  see [`../git/branching-strategy.md`](../git/branching-strategy.md).
+  see `{shared}/git/branching-strategy.md`.
 * **The license is fixed.** MIT, held by MCAgents. Do not change the license, the
   copyright holder, or the year without explicit user instruction — that is a
   legal statement, not a code change.
-* **Never bump the version yourself** — see [`versioning.md`](versioning.md). The
+* **Never bump the version yourself** — see `{shared}/rules/versioning.md`. The
   version carrier is `project-version` in `gradle.properties`, currently `0.4.0`.
   `wiki/logs/` carries `0/1/0` through `0/4/0`; creating another version directory
   requires user approval, exactly like editing that property.
 * **Never create an `INDEX.md`.** Every index is a file in `.agents/index/`, named
-  `{scope}-index.md`. This is absolute — see [`directories.md`](directories.md).
+  `{scope}-index.md`. This is absolute — see `{shared}/rules/directories.md`.
 * **Write memory as you work.** Finishing a meaningful unit of work without recording
   it under `.agents/memory/` is an incomplete task, and needs no approval — see
-  [`memory-policy.md`](memory-policy.md).
+  `{shared}/rules/memory-policy.md`.
 * **Placement is not a judgment call.** New instructions and documents go where
-  [`directories.md`](directories.md) says, including creating a new folder when
+  `{shared}/rules/directories.md` says, including creating a new folder when
   none fits.
 * **Keep `README.md` and `AGENTS.md` overviews.** Detail belongs in `wiki/`; rules
   belong in `.agents/{folder}/`. If detail creeps into either overview, move it down
@@ -105,4 +123,4 @@ reshaping the rules.
 
 This file is an instruction, so it is **not yours to edit on your own initiative** — even
 when you are confident it is wrong. Collect the finding and propose it, per
-[`discovery-protocol.md`](discovery-protocol.md).
+`{shared}/rules/discovery-protocol.md`.
