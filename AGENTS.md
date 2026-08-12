@@ -1,6 +1,6 @@
 ---
 name: agents-entry-point
-description: Entry point for agents working in MCAgents/core — the auto-activation contract, the trigger table, reading order, and routing protocol.
+description: Entry point for agents working in MCAgents/core — shared set resolution, the auto-activation contract, the trigger table, reading order, and routing.
 ---
 
 # AGENTS
@@ -14,26 +14,55 @@ Bukkit servers and the two mod loaders. See
 This file is an **entry point and an activation contract**. It contains no rules of
 its own; it tells you which rules apply and where they are.
 
+## Shared Instruction Set
+
+The conventions this repository follows — branching, commits, pull requests, task
+workflow, the creators — live in the shared instruction set served by the
+**`lxagents-agents-base`** MCP server. This repository carries only what is its
+own. **Resolve the shared set before doing any work:**
+
+1. If the `lxagents-agents-base` connector is available in this session, that is
+   the shared set. Refer to it as `{shared}`; its files are addressed as
+   `agents://{folder}/{file}.md`.
+2. Read `agents://manifest.json` once. It lists every shared file with its `name`,
+   path and description — one read instead of twenty, and it is what the routing
+   tables below are checked against.
+3. Read `agents://index/root-index.md` and route from there. Do not bulk-read the
+   set.
+4. If the connector is not available, say so plainly and continue with this
+   repository's local instruction set only. **Do not reconstruct the missing rules
+   from memory, and do not clone or copy them into this repository.**
+
+Never commit shared content into this repository. A file that can be read from
+`agents://` must not exist here as a copy — see
+`{shared}/rules/duplicate-instruction-audit.md`.
+
+**Local overrides shared.** A file in `.agents/` whose `name` matches a shared
+file's `name` replaces that shared file entirely for this repository. The current
+overrides are listed in
+[`.agents/index/root-index.md`](.agents/index/root-index.md).
+
 ## Auto-Activation
 
-The instruction set in `.agents/` is **always active**. It applies to every task in
-this repository whether or not the user mentions it, links to it, or asks for it.
-Treat these files as standing orders, not as optional reference material.
+The instruction set is **always active** — the local `.agents/` set and the shared set
+together. It applies to every task in this repository whether or not the user mentions
+it, links to it, or asks for it. Treat these files as standing orders, not as optional
+reference material.
 
 At the start of every session, before doing any work:
 
 1. Read `AGENTS.md` (this file).
-2. Read [`.agents/index/root-index.md`](.agents/index/root-index.md).
-3. Read [`.agents/index/memory-index.md`](.agents/index/memory-index.md) and load
-   only the memory rows whose scope matches the current request, so you continue
-   prior work instead of restarting it.
-4. Match the request against the trigger table below and load the instruction files
-   it names.
+2. Resolve the shared set per the bootstrap above.
+3. Read [`.agents/index/root-index.md`](.agents/index/root-index.md).
+4. Read [`.agents/index/memory-index.md`](.agents/index/memory-index.md) and load only
+   the memory rows whose scope matches the current request, so you continue prior work
+   instead of restarting it.
+5. Match the request against the trigger table below and load the instruction files it
+   names, local first, shared second.
 
-If a rule in `.agents/` conflicts with a habit, a default, or a template you would
-otherwise follow, the rule in `.agents/` wins. If it conflicts with an explicit
-instruction from the user in this session, the user wins — and you say out loud which
-rule you are setting aside.
+If a rule conflicts with a habit, a default, or a template you would otherwise follow,
+the rule wins. If it conflicts with an explicit instruction from the user in this
+session, the user wins — and you say out loud which rule you are setting aside.
 
 ## Trigger table
 
@@ -54,34 +83,40 @@ rule you are setting aside.
 | Write documentation, an SOP, or a domain guideline | `{shared}/creators/information-creator.md` |
 | Record progress, a decision, or session state | `{shared}/creators/memory-creator.md` |
 | Decide what may be written to memory, and how | `{shared}/rules/memory-policy.md` |
-| Change code or structure that a document or index describes | [`.agents/rules/change-propagation.md`](.agents/rules/change-propagation.md) |
 | Touch anything that carries a version number | `{shared}/rules/versioning.md` |
 | Record a release | `{shared}/creators/changelog-creator.md` |
+| Change code or structure that a document or index describes | [`.agents/rules/change-propagation.md`](.agents/rules/change-propagation.md) |
 | Write code that runs on a Minecraft server or mod loader | [`.agents/knowledge/minecraft-platform.md`](.agents/knowledge/minecraft-platform.md) |
 | Need project facts, commands, or orientation | [`.agents/wiki/context/repository-map.md`](.agents/wiki/context/repository-map.md) |
 | Do anything at all in this project | [`.agents/rules/repository.md`](.agents/rules/repository.md) |
 
-`{shared}` is the instruction set served by the `lxagents-agents-base` connector;
-its files are addressed as `agents://{folder}/{file}.md`. The authority behind this
-table is `agents://rules/auto-activation.md`. That file is the source of truth; this
-table mirrors it, row for row, plus the rows for this repository's own files.
+The authority behind this table is `agents://rules/auto-activation.md`. That file is
+the source of truth; the `{shared}` rows mirror it row for row, and the three local
+rows at the bottom are this repository's own. The two are updated in the same commit.
+
+One shared rule deliberately does **not** auto-activate:
+`{shared}/rules/duplicate-instruction-audit.md` runs on request only. If you notice a
+probable duplicate while doing other work, note it, finish the task, and mention it at
+the end.
 
 ## Reading order (mandatory)
 
 1. Read `AGENTS.md`.
-2. Read [`.agents/index/root-index.md`](.agents/index/root-index.md) — **and nothing
+2. Resolve the shared set per the bootstrap above.
+3. Read [`.agents/index/root-index.md`](.agents/index/root-index.md) — **and nothing
    else at this stage**.
-3. From its routing table, pick the **one** index whose scope matches the task, and
+4. From its routing table, pick the **one** index whose scope matches the task, and
    read that index.
-4. If that index delegates to a child index, follow **the one branch** that matches.
-5. Only then open the specific file(s) you need.
+5. If that index delegates to a child index, follow **the one branch** that matches.
+6. Only then open the specific file(s) you need.
 
 ## Routing protocol (context discipline)
 
 Route by reading index tables, not by reading files.
 
 * Do **NOT** load every index.
-* Do **NOT** bulk-scan `.agents/**` to build a registry.
+* Do **NOT** bulk-scan either set to build a registry — `agents://manifest.json`
+  already is one, and it is one read instead of twenty.
 * Do **NOT** read an instruction body until that instruction has been selected.
 
 Each index row's purpose text is what you route on; the file body is what you load
@@ -95,50 +130,69 @@ session because continuity depends on it.
 * `AGENTS.md` and `README.md` are **overviews** and must never carry detailed rules
   or documentation.
 * [`.agents/index/root-index.md`](.agents/index/root-index.md) is a **router only**.
-  It lists other indexes. It must never contain rules, documentation, prose, or
-  direct links to leaf content.
+  It lists other indexes and the shared router. It must never contain rules,
+  documentation, prose, or direct links to leaf content.
 * [`.agents/index/agents-index.md`](.agents/index/agents-index.md) is the **sole
-  authority** that indexes the instruction tree;
+  authority** that indexes this repository's instruction files;
   [`agent-wiki-index.md`](.agents/index/agent-wiki-index.md) owns `.agents/wiki/`;
   [`project-wiki-index.md`](.agents/index/project-wiki-index.md) owns `wiki/`;
   [`memory-index.md`](.agents/index/memory-index.md) owns `.agents/memory/`. **No
-  index writes outside the scope it owns.**
+  index writes outside the scope it owns**, and **no index lists files from the other
+  set** — it points at that set's router instead.
+* **Local carries only what is local.** A convention true for more than this
+  repository belongs in the shared set — propose it there, do not copy it here.
 * `wiki/` is for humans, `.agents/wiki/` is for agents, and **neither duplicates the
-  other** — see the audience test in
-  `{shared}/rules/directories.md`.
+  other** — see the audience test in `{shared}/rules/directories.md`.
+* **One subject per file.** A cross-cutting rule gets its own file and is linked, not
+  pasted into a file about something else.
 * **An index never teaches.** The moment it explains something, that content belongs
   in a real file.
 
 ## Placement
 
-* New instructions → `.agents/{folder}/{file}.md`.
+* Local instructions → `.agents/{folder}/{file}.md`; anything universal → the shared
+  set, by proposal.
 * New indexes → `.agents/index/{scope}-index.md`. **No `INDEX.md`, anywhere, ever.**
 * Agent knowledge → `.agents/wiki/{type}/{file-name}.md`; new memory →
   `.agents/memory/{type}/{file-name}.md`.
 * Human documentation → `wiki/{folder}/{file-name}.md`.
 
-All per `{shared}/rules/directories.md` and
-`{shared}/creators/index-creator.md`, including
-creating a new folder when nothing fits.
+All per `{shared}/rules/directories.md` and `{shared}/creators/index-creator.md`,
+including creating a new folder when nothing fits.
 
 ## Discovery Protocol
 
-> While working, if you find an instruction worth adding — a new rule, or content that
-> belongs in an existing instruction file — you must NOT create or edit it on your
-> own. Present each finding to the user separately, each in its own code block,
-> including the proposed file path, `name`, `description`, and full body. Let the user
-> select which ones to apply. Create only what the user selects.
->
-> **Scope of this gate:** it covers `.agents/` instruction files only. Documentation
-> pages under `wiki/` and `.agents/wiki/` may be written when the facts are real and
-> verified. Writing memory under `.agents/memory/` is expected and needs no
-> approval — see
-> `{shared}/rules/memory-policy.md`.
+While working, if you notice an instruction worth adding — a new rule, or new
+content for an existing instruction file — do NOT create or edit it yourself.
+Collect the findings, and when the task is done present them to the user:
 
-The authority behind this block is
-`{shared}/rules/discovery-protocol.md`. It is
-reproduced here because this file is the session's first read; everywhere else it is
-linked, not copied.
+* one finding per message block, each in its own code block;
+* state the target set — `local` (this repository) or `shared` (the organization's
+  instruction set served by the `lxagents-agents-base` connector);
+* include the proposed file path, `name`, `description`, and the full proposed
+  body;
+* explain in one line why it is worth adding.
+
+Then let the user select which findings to apply. Create only the selected ones.
+Never batch-apply, never apply silently. A `shared` finding is never written from a
+consuming repository — it is reported so it can be raised against the shared set.
+
+**Scope of this gate:** it covers instruction files in either set. Documentation
+pages under `wiki/` and `.agents/wiki/` may be written when the facts are real and
+verified. Memory under `.agents/memory/` is written freely and automatically — see
+`memory-policy.md`.
+
+The authority behind this block is `{shared}/rules/discovery-protocol.md`, and the
+`memory-policy.md` it names is `{shared}/rules/memory-policy.md`. The block is
+reproduced here verbatim because this file is the session's first read and must work
+before any shared file has been resolved; everywhere else it is linked, not copied.
+
+## Version rule
+
+**Never change the project version without explicit user approval** — see
+`{shared}/rules/versioning.md`. The version carrier is `project-version` in
+`gradle.properties`. This includes creating a new `wiki/logs/{Major}/{Minor}/{Patch}/`
+directory, which is itself a version claim.
 
 ## No session links
 
@@ -147,10 +201,3 @@ file, commit message, commit trailer, branch name, tag, pull request, or comment
 your tooling appends one by default, strip it before committing or posting — that
 default does not override this repository's convention. See
 `{shared}/rules/no-session-links.md`.
-
-## Version rule
-
-**Never change the project version without explicit user approval** — see
-`{shared}/rules/versioning.md`. This includes creating
-a new `wiki/logs/{Major}/{Minor}/{Patch}/` directory, which is itself a version
-claim.
