@@ -41,10 +41,21 @@ history, read `wiki/logs/`.
 - **No decided Minecraft version range.** Nothing version-specific has been written,
   deliberately.
 
-**Agent system.** The `.agents/` tree now follows the centralized architecture: all
-indexes live in `.agents/index/`, agent knowledge in `.agents/wiki/`, and dynamic
-state here in `.agents/memory/`. No `INDEX.md` exists anywhere in the repository.
-See [`../tasks/agents-setup.md`](../tasks/agents-setup.md).
+**Agent system.** This is a **consuming repository**. The universal conventions are
+served by the `lxagents-agents-base` MCP connector and addressed as
+`agents://{folder}/{file}.md`; `AGENTS.md` carries the bootstrap block that resolves
+them. `.agents/` holds only what is this repository's own — `rules/repository.md`,
+`rules/change-propagation.md`, `knowledge/minecraft-platform.md` — plus the three
+reserved trees: `.agents/index/` (all six indexes), `.agents/wiki/` (agent
+knowledge), and `.agents/memory/` (dynamic state).
+
+There is no `git/`, `planning/`, `prompts/`, or `creators/` folder; sixteen local
+copies of shared files were removed, and the override table in `root-index.md` is
+empty, meaning nothing here overrides the shared set. No `INDEX.md` exists anywhere
+in the repository. See
+[`../tasks/agents-instruction-rewrite.md`](../tasks/agents-instruction-rewrite.md),
+and [`../tasks/agents-setup.md`](../tasks/agents-setup.md) for the generation that
+preceded it.
 
 **Next obvious step.** Either a CI workflow — which would make `./gradlew test` run
 on every pull request and let the "no CI" caveat come out of three separate files —
