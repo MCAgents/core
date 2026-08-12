@@ -20,16 +20,17 @@ wants and replays it.
 
 ## What is here today
 
-- A Gradle multi project build on **Java 25**: `api`, `common`, and eight
+- A Gradle multi project build on **Java 25**: `api`, `common`, and ten
   `platforms/*` modules, all under `io.github.mcagents.core`. See
   [`wiki/information/modules.md`](wiki/information/modules.md).
 - `MCAgentsProvider` — the single entry point, and the only class a consumer
   needs to read. See [`wiki/reference/api.md`](wiki/reference/api.md).
 - An agent instruction set under `.agents/` — placement rules, git conventions,
   task workflow, and the creator agents that maintain the trees.
-- A documentation tree under `wiki/`.
-- An `INDEX.md` router tree so a file can be found by reading a few small tables
-  instead of scanning the repository.
+- A documentation tree under `wiki/` for people, and an agent-facing knowledge and
+  memory tree under `.agents/wiki/` and `.agents/memory/`.
+- A centralized index tree in `.agents/index/` so a file can be found by reading a few
+  small tables instead of scanning the repository.
 
 ## Quick start
 
@@ -44,8 +45,6 @@ details: [`wiki/environments/setup.md`](wiki/environments/setup.md).
 
 ## Documentation
 
-Start at [`wiki/INDEX.md`](wiki/INDEX.md).
-
 - [`wiki/information/overview.md`](wiki/information/overview.md) — what this
   repository is and how it is organized.
 - [`wiki/guides/llm-providers.md`](wiki/guides/llm-providers.md) — getting from
@@ -56,7 +55,14 @@ Start at [`wiki/INDEX.md`](wiki/INDEX.md).
   graph, the dependency rules, and the published artifacts.
 - [`wiki/environments/setup.md`](wiki/environments/setup.md) — getting a working
   copy, and building, testing, and publishing it.
-- [`AGENTS.md`](AGENTS.md) — entry point for agents working in this repository.
+
+The full map of the wiki is
+[`.agents/index/project-wiki-index.md`](.agents/index/project-wiki-index.md).
+
+## Working with agents
+
+Start at [`AGENTS.md`](AGENTS.md) — the entry point, the auto-activation contract, and
+the trigger table for the instruction set in `.agents/`.
 
 ## License
 

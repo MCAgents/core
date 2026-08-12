@@ -17,9 +17,12 @@ are:
 * `LICENSE` — MIT, `Copyright (c) 2026 MCAgents`
 * `settings.gradle`, `build.gradle`, `gradle.properties`, `gradlew`,
   `gradlew.bat`, `gradle/` — the build, the wrapper, and the version catalog
-* `api/`, `common/`, `platforms/` — the ten modules, all packaged under
+* `api/`, `common/`, `platforms/` — the twelve modules, all packaged under
   `io.github.mcagents.core`
-* the `.agents/` instruction tree and the `wiki/` documentation tree
+* `.agents/` — the instruction folders, plus three reserved structural trees:
+  `.agents/index/` (every index), `.agents/wiki/` (agent knowledge), and
+  `.agents/memory/` (dynamic state)
+* `wiki/` — the human documentation tree, including `wiki/logs/` release history
 
 The module graph, the dependency rules, and the published coordinates are
 documented once, in
@@ -71,22 +74,30 @@ exists.
   copyright holder, or the year without explicit user instruction — that is a
   legal statement, not a code change.
 * **Never bump the version yourself** — see [`versioning.md`](versioning.md). The
-  version carrier is `project-version` in `gradle.properties`, currently
-  `0.0.0`. No `wiki/logs/` version directory exists; creating one requires user
-  approval, exactly like editing that property.
+  version carrier is `project-version` in `gradle.properties`, currently `0.4.0`.
+  `wiki/logs/` carries `0/1/0` through `0/4/0`; creating another version directory
+  requires user approval, exactly like editing that property.
+* **Never create an `INDEX.md`.** Every index is a file in `.agents/index/`, named
+  `{scope}-index.md`. This is absolute — see [`directories.md`](directories.md).
+* **Write memory as you work.** Finishing a meaningful unit of work without recording
+  it under `.agents/memory/` is an incomplete task, and needs no approval — see
+  [`memory-policy.md`](memory-policy.md).
 * **Placement is not a judgment call.** New instructions and documents go where
   [`directories.md`](directories.md) says, including creating a new folder when
   none fits.
-* **Keep `README.md` and `AGENTS.md` overviews.** Detail belongs in `wiki/`;
-  rules belong in `.agents/`. If detail creeps into either overview, move it down
-  rather than leaving it.
+* **Keep `README.md` and `AGENTS.md` overviews.** Detail belongs in `wiki/`; rules
+  belong in `.agents/{folder}/`. If detail creeps into either overview, move it down
+  rather than leaving it. `AGENTS.md` carries the auto-activation contract and the
+  trigger table, never a rule body.
 
 ## When this file goes stale
 
 This file's "Current state" and "What the project does" sections describe the
 repository at a moment in time. The moment a CI workflow lands, a `platforms/*`
 module gains real code, or one of the three constraints above is deliberately
-changed, they are wrong. Correcting them is part of the change that caused it —
+changed, they are wrong. The live version of that snapshot is
+[`../memory/state/repository-state.md`](../memory/state/repository-state.md), which is
+updated freely; this file changes only by proposal. Correcting them is part of the change that caused it —
 subject to the Discovery Protocol below, propose the rewrite rather than silently
 reshaping the rules.
 
@@ -103,3 +114,8 @@ Collect the findings, and when the task is done present them to the user:
 
 Then let the user select which findings to apply. Create only the selected ones.
 Never batch-apply, never apply silently.
+
+**Scope of this gate:** it covers instruction files under `.agents/{folder}/`.
+Documentation pages under `wiki/` and `.agents/wiki/` may be written when the facts
+are real and verified. Memory under `.agents/memory/` is written freely and
+automatically — see [`memory-policy.md`](memory-policy.md).
