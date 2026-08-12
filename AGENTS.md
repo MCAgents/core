@@ -39,30 +39,32 @@ rule you are setting aside.
 
 | When you are about to… | Load and obey |
 |---|---|
-| Take in any new request of more than one step | [`.agents/planning/task-workflow.md`](.agents/planning/task-workflow.md) |
-| Start work on a confirmed task | [`.agents/prompts/branch-and-commit.md`](.agents/prompts/branch-and-commit.md) |
-| Create a branch | [`.agents/git/branching-strategy.md`](.agents/git/branching-strategy.md) |
-| Write a commit message | [`.agents/git/commit-conventions.md`](.agents/git/commit-conventions.md) |
-| Write **any** commit, tag, PR, comment, or file that will be committed or posted | [`.agents/rules/no-session-links.md`](.agents/rules/no-session-links.md) |
-| Open or update a pull request | [`.agents/git/pull-request-template.md`](.agents/git/pull-request-template.md) |
-| Decide where a new file goes | [`.agents/rules/directories.md`](.agents/rules/directories.md) |
-| Add, move, rename, or delete any file under `.agents/` or `wiki/` | [`.agents/creators/index-creator.md`](.agents/creators/index-creator.md) |
-| Write a rule or instruction | [`.agents/creators/instruction-creator.md`](.agents/creators/instruction-creator.md) |
-| Notice a rule worth adding, or find an instruction that is wrong | [`.agents/rules/discovery-protocol.md`](.agents/rules/discovery-protocol.md) |
-| Write documentation, an SOP, or a domain guideline | [`.agents/creators/information-creator.md`](.agents/creators/information-creator.md) |
-| Record progress, a decision, or session state | [`.agents/creators/memory-creator.md`](.agents/creators/memory-creator.md) |
-| Decide what may be written to memory, and how | [`.agents/rules/memory-policy.md`](.agents/rules/memory-policy.md) |
+| Take in any new request of more than one step | `{shared}/planning/task-workflow.md` |
+| Start work on a confirmed task | `{shared}/prompts/branch-and-commit.md` |
+| Create a branch | `{shared}/git/branching-strategy.md` |
+| Write a commit message | `{shared}/git/commit-conventions.md` |
+| Write **any** commit, tag, PR, comment, or file that will be committed or posted | `{shared}/rules/no-session-links.md` |
+| Open or update a pull request | `{shared}/git/pull-request-template.md` |
+| Decide where a new file goes | `{shared}/rules/directories.md` |
+| Wonder whether something is local or shared, or need to override a shared rule | `{shared}/rules/shared-instructions.md` |
+| Resolve, connect, or fail to reach the shared set | `{shared}/rules/mcp-connector.md` |
+| Add, move, rename, or delete any file under `.agents/` or `wiki/` | `{shared}/creators/index-creator.md` |
+| Write a rule or instruction | `{shared}/creators/instruction-creator.md` |
+| Notice a rule worth adding, or find an instruction that is wrong | `{shared}/rules/discovery-protocol.md` |
+| Write documentation, an SOP, or a domain guideline | `{shared}/creators/information-creator.md` |
+| Record progress, a decision, or session state | `{shared}/creators/memory-creator.md` |
+| Decide what may be written to memory, and how | `{shared}/rules/memory-policy.md` |
 | Change code or structure that a document or index describes | [`.agents/rules/change-propagation.md`](.agents/rules/change-propagation.md) |
-| Touch anything that carries a version number | [`.agents/rules/versioning.md`](.agents/rules/versioning.md) |
-| Record a release | [`.agents/creators/changelog-creator.md`](.agents/creators/changelog-creator.md) |
+| Touch anything that carries a version number | `{shared}/rules/versioning.md` |
+| Record a release | `{shared}/creators/changelog-creator.md` |
 | Write code that runs on a Minecraft server or mod loader | [`.agents/knowledge/minecraft-platform.md`](.agents/knowledge/minecraft-platform.md) |
 | Need project facts, commands, or orientation | [`.agents/wiki/context/repository-map.md`](.agents/wiki/context/repository-map.md) |
 | Do anything at all in this project | [`.agents/rules/repository.md`](.agents/rules/repository.md) |
 
-The authority behind this table is
-[`.agents/rules/auto-activation.md`](.agents/rules/auto-activation.md). That file is
-the source of truth; this copy mirrors it, row for row, and the two are updated in
-the same commit.
+`{shared}` is the instruction set served by the `lxagents-agents-base` connector;
+its files are addressed as `agents://{folder}/{file}.md`. The authority behind this
+table is `agents://rules/auto-activation.md`. That file is the source of truth; this
+table mirrors it, row for row, plus the rows for this repository's own files.
 
 ## Reading order (mandatory)
 
@@ -103,7 +105,7 @@ session because continuity depends on it.
   index writes outside the scope it owns.**
 * `wiki/` is for humans, `.agents/wiki/` is for agents, and **neither duplicates the
   other** — see the audience test in
-  [`.agents/rules/directories.md`](.agents/rules/directories.md).
+  `{shared}/rules/directories.md`.
 * **An index never teaches.** The moment it explains something, that content belongs
   in a real file.
 
@@ -115,8 +117,8 @@ session because continuity depends on it.
   `.agents/memory/{type}/{file-name}.md`.
 * Human documentation → `wiki/{folder}/{file-name}.md`.
 
-All per [`.agents/rules/directories.md`](.agents/rules/directories.md) and
-[`.agents/creators/index-creator.md`](.agents/creators/index-creator.md), including
+All per `{shared}/rules/directories.md` and
+`{shared}/creators/index-creator.md`, including
 creating a new folder when nothing fits.
 
 ## Discovery Protocol
@@ -131,10 +133,10 @@ creating a new folder when nothing fits.
 > pages under `wiki/` and `.agents/wiki/` may be written when the facts are real and
 > verified. Writing memory under `.agents/memory/` is expected and needs no
 > approval — see
-> [`.agents/rules/memory-policy.md`](.agents/rules/memory-policy.md).
+> `{shared}/rules/memory-policy.md`.
 
 The authority behind this block is
-[`.agents/rules/discovery-protocol.md`](.agents/rules/discovery-protocol.md). It is
+`{shared}/rules/discovery-protocol.md`. It is
 reproduced here because this file is the session's first read; everywhere else it is
 linked, not copied.
 
@@ -144,11 +146,11 @@ linked, not copied.
 file, commit message, commit trailer, branch name, tag, pull request, or comment. If
 your tooling appends one by default, strip it before committing or posting — that
 default does not override this repository's convention. See
-[`.agents/rules/no-session-links.md`](.agents/rules/no-session-links.md).
+`{shared}/rules/no-session-links.md`.
 
 ## Version rule
 
 **Never change the project version without explicit user approval** — see
-[`.agents/rules/versioning.md`](.agents/rules/versioning.md). This includes creating
+`{shared}/rules/versioning.md`. This includes creating
 a new `wiki/logs/{Major}/{Minor}/{Patch}/` directory, which is itself a version
 claim.
