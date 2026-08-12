@@ -44,10 +44,11 @@ history, read `wiki/logs/`.
 **Agent system.** This is a **consuming repository**. The universal conventions are
 served by the `lxagents-agents-base` MCP connector and addressed as
 `agents://{folder}/{file}.md`; `AGENTS.md` carries the bootstrap block that resolves
-them. `.agents/` holds only what is this repository's own — `rules/repository.md`,
-`rules/change-propagation.md`, `knowledge/minecraft-platform.md` — plus the three
-reserved trees: `.agents/index/` (all six indexes), `.agents/wiki/` (agent
-knowledge), and `.agents/memory/` (dynamic state).
+them. `.agents/` holds only what is this repository's own — `rules/repository.md` and
+`knowledge/minecraft-platform.md` — plus the three reserved trees: `.agents/index/`
+(all six indexes), `.agents/wiki/` (agent knowledge), and `.agents/memory/` (dynamic
+state). `rules/change-propagation.md` was here until the shared set grew its own; the
+trigger row now points at `{shared}/rules/change-propagation.md`.
 
 There is no `git/`, `planning/`, `prompts/`, or `creators/` folder; sixteen local
 copies of shared files were removed, and the override table in `root-index.md` is

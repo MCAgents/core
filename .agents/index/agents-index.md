@@ -1,6 +1,6 @@
 ---
 name: agents-index
-description: Index of this repository's own instruction files — the repository rules, change propagation, and the Minecraft platform knowledge.
+description: Index of this repository's own instruction files — the repository rules and the Minecraft platform knowledge.
 ---
 
 # Agents Index
@@ -25,7 +25,6 @@ the standing prompts, the creators, and the universal rules are served by the
 | File | Purpose |
 |---|---|
 | [`../rules/repository.md`](../rules/repository.md) | What is actually true about this repository right now, and the constraints a change must not break. |
-| [`../rules/change-propagation.md`](../rules/change-propagation.md) | A change to code or structure updates the docs, indexes, and memory it invalidates, in the same commit. |
 
 ## Knowledge
 

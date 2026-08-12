@@ -84,8 +84,8 @@ exists.
   [`../../wiki/environments/setup.md`](../../wiki/environments/setup.md). Never
   write a command you have not seen work in this repository.
 * **A change carries its documentation with it** — see
-  [`change-propagation.md`](change-propagation.md). Code and structure changes
-  update the `wiki/` pages and indexes they invalidate, in the same commit.
+  `{shared}/rules/change-propagation.md`. Code and structure changes update the
+  `wiki/` pages and indexes they invalidate, in the same commit.
 * **The default branch is `master`.** Branch from it, never commit to it directly —
   see `{shared}/git/branching-strategy.md`.
 * **The license is fixed.** MIT, held by MCAgents. Do not change the license, the
